@@ -1,0 +1,557 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valoración Profesional de Townhouse - Ciudad Bolívar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        /* Minimal global styles, Tailwind preferred */
+        body {
+            font-family: 'Montserrat', sans-serif;
+        }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react-dom/client": "https://esm.sh/react-dom@^19.1.0/client",
+    "react": "https://esm.sh/react@^19.1.0",
+    "chart.js": "https://esm.sh/chart.js@^4.4.9"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="bg-[#f5f5f5] text-[#333333]">
+    <div id="root"></div>
+    <script type="text/babel" data-type="module">
+        import React, { useEffect, useRef } from 'react';
+        import ReactDOM from 'react-dom/client';
+        import { Chart, registerables } from 'chart.js';
+
+        Chart.register(...registerables);
+
+        const RossHeideckeCalculator = () => {
+            const data = {
+                area: '113 m²',
+                valorM2Construccion: 'Bs. 115.520',
+                estado: 2.00,
+                coeficiente: '2,52%',
+                edadEfectiva: '43 años',
+                vidaUtil: '80 años',
+                valorResidual: '10%',
+                valorEstimadoConstruccionBs: '8.025.564,36',
+                valorRedondeadoBs: '8.025.560,00',
+                valorActualUsd: '34.438,55',
+                tasaCambio: '233,04',
+                fechaTasa: 'Miércoles 12 de Noviembre del año 2.025'
+            };
+
+            const depreciacionData = [
+                { estado: 1, condicion: 'NUEVO. No ha sufrido ni necesita reparaciones.', clasificacion: 'Optimo- 0', coeficiente: '0' },
+                { estado: 1.5, condicion: 'Excelente mantenimiento, casa recien construida.', clasificacion: 'Muy bueno - MB', coeficiente: '0,032' },
+                { estado: 2, condicion: 'REGULAR. Requiere o ha recibido reparaciones sin importancia', clasificacion: 'Bueno B', coeficiente: '2,52' },
+                { estado: 2.5, condicion: 'Mantenimiento no muy bueno', clasificacion: 'Intermedio I', coeficiente: '8,09' },
+                { estado: 3, condicion: 'Requiere reparaciones simples', clasificacion: 'Regular R', coeficiente: '18,10' },
+                { estado: 3.5, condicion: 'Mantenimiento deficiente.', clasificacion: 'Deficiente -D', coeficiente: '32,20' },
+                { estado: 4, condicion: 'Requiere reparaciones importantes', clasificacion: 'Malo M', coeficiente: '52,60' },
+                { estado: 5, condicion: 'Requiere muchas reparaciones importantes', clasificacion: 'Muy Malo -MM', coeficiente: '72,20' },
+                { estado: '', condicion: 'Sin valor= Valor de Demolición', clasificacion: 'Demolición -DM', coeficiente: '100' },
+            ];
+
+            const inputParams = [
+                { label: 'Área de Construcción', value: data.area },
+                { label: 'VR (Valor M2 de Construcción)', value: data.valorM2Construccion, highlight: true },
+                { label: 'e (Estado)', value: data.estado },
+                { label: 'C (Coeficiente)', value: data.coeficiente },
+                { label: 'Ee (Edad Efectiva)', value: data.edadEfectiva },
+                { label: 'Vu (Vida Útil)', value: data.vidaUtil },
+                { label: 'Vr (Valor Residual)', value: data.valorResidual },
+            ];
+
+            return (
+                <div className="bg-white p-0">
+                    <h2 className="text-[#1e3c72] border-b-2 border-[#1e3c72] pb-2 mb-6 text-2xl font-bold">CÁLCULO DE VALOR TÉCNICO</h2>
+                    <p className="mb-6 text-gray-700">El valor técnico de reposición se determina utilizando el método de Ross-Heidecke, que considera la edad de la construcción, su vida útil y su estado de conservación actual para calcular la depreciación acumulada. A continuación se presentan los datos y resultados:</p>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                        <div>
+                            <h3 className="text-lg font-semibold mb-3 text-gray-800">Parámetros de Depreciación</h3>
+                            <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 h-full flex flex-col">
+                                <ul className="space-y-2 text-sm flex-grow">
+                                    {inputParams.map(param => (
+                                        <li key={param.label} className={`flex justify-between items-center p-1 rounded ${param.highlight ? 'bg-blue-100' : ''}`}>
+                                            <span className="text-gray-600">{param.label}:</span>
+                                            <span className="font-mono font-semibold text-gray-800">{param.value}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                                <p className="text-xs text-gray-500 mt-2">
+                                    *VR: Guías de SOITAVE, acorde a la tipología del Inmueble en Estudio. EDIFICIO MULTIFAMILIAR EN ESTRUCTURA METÁLICA DE CUATRO PISOS, SIN ASCENSOR NI SÓTANO, Edición Marzo 2.017 (Pág. 8). Adaptada y Actualizada al 12/11/2025
+                                </p>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 className="text-lg font-semibold mb-3 text-gray-800">Valor Estimado de la Construcción</h3>
+                            <div className="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500 h-full">
+                                <div className="text-center">
+                                    <p className="text-sm text-blue-800">VALOR ACTUAL (REDONDEADO)</p>
+                                    <p className="text-2xl font-bold text-blue-900">Bs. {data.valorRedondeadoBs}</p>
+                                </div>
+                                <hr className="my-3 border-blue-200" />
+                                <div className="text-center">
+                                    <p className="text-sm font-bold text-green-700">VALOR ACTUAL EN DÓLARES</p>
+                                    <p className="text-4xl font-extrabold text-green-800 tracking-tight">${data.valorActualUsd}</p>
+                                </div>
+                                <p className="text-xs text-gray-500 mt-2 text-center">
+                                    *Tasa de cambio BCV (Bs./$ {data.tasaCambio}) del {data.fechaTasa}.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="mt-12">
+                        <h3 className="text-lg font-semibold mb-3 text-gray-800">Tabla de Depreciación por Estado (Ross-Heidecke)</h3>
+                        <div className="overflow-x-auto border rounded-lg">
+                            <table className="w-full text-sm text-left">
+                                <thead className="bg-gray-100 text-xs text-gray-800 uppercase">
+                                    <tr>
+                                        <th className="px-4 py-2">Estado</th>
+                                        <th className="px-4 py-2">Condición Física</th>
+                                        <th className="px-4 py-2">Clasificación Normal</th>
+                                        <th className="px-4 py-2 text-right">Coeficiente (%)</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="text-gray-700">
+                                    {depreciacionData.map((row, index) => {
+                                        const isSelectedRow = row.estado === data.estado;
+                                        
+                                        return (
+                                            <tr key={index} className={`border-b ${isSelectedRow ? 'bg-blue-100 font-semibold' : ''}`}>
+                                                <td className="px-4 py-2 text-center">{row.estado}</td>
+                                                <td className="px-4 py-2">{row.condicion}</td>
+                                                <td className="px-4 py-2">{row.clasificacion}</td>
+                                                <td className="px-4 py-2 text-right font-mono">{row.coeficiente}</td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
+                        </div>
+                        <p className="text-xs text-gray-500 mt-2">* Este método es exclusivo para calcular la depreciación en la valoración de construcción; considera el estado de conservación calculando la depreciación más acorde a la realidad.</p>
+                    </div>
+                </div>
+            );
+        };
+
+        const setupChart = (canvasRef, chartInstanceRef, config) => {
+            if (canvasRef.current) {
+                if (chartInstanceRef.current) {
+                    chartInstanceRef.current.destroy();
+                }
+                const ctx = canvasRef.current.getContext('2d');
+                if (ctx) {
+                    chartInstanceRef.current = new Chart(ctx, config);
+                }
+            }
+        };
+
+        const ValuationReport = () => {
+            const marketValueComparisonChartRef = useRef(null);
+            const marketValueComparisonChartInstance = useRef(null);
+            const radarChartRef = useRef(null);
+            const radarChartInstance = useRef(null);
+
+            useEffect(() => {
+                const marketValueComparisonChartConfig = {
+                    type: 'bar',
+                    data: {
+                        labels: ['Valor Técnico Calculado', 'Precio de Promoción Sugerido'],
+                        datasets: [{
+                            label: 'Precio en USD',
+                            data: [34438.55, 25000],
+                            backgroundColor: ['rgba(54, 162, 235, 0.6)', 'rgba(75, 192, 192, 0.6)'],
+                            borderColor: ['rgba(54, 162, 235, 1)', 'rgba(75, 192, 192, 1)'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: { display: true, text: 'Comparación de Valores del Inmueble (USD)', font: { size: 16 } },
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: (context) => '$' + context.raw.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: (value) => '$' + parseFloat(value).toLocaleString('es-VE')
+                                }
+                            }
+                        }
+                    }
+                };
+                setupChart(marketValueComparisonChartRef, marketValueComparisonChartInstance, marketValueComparisonChartConfig);
+
+                const radarChartConfig = {
+                    type: 'radar',
+                    data: {
+                        labels: ['Modernidad', 'Acabados', 'Mobiliario', 'Estacionamiento', 'Seguridad'],
+                        datasets: [
+                            {
+                                label: 'Inmueble en Estudio',
+                                data: [1, 2, 1, 2, 1],
+                                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                pointBackgroundColor: 'rgba(54, 162, 235, 1)',
+                                pointBorderColor: '#fff',
+                                pointHoverBackgroundColor: '#fff',
+                                pointHoverBorderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 2
+                            },
+                            {
+                                label: 'Oferta de Referencia',
+                                data: [4, 5, 5, 5, 5],
+                                backgroundColor: 'rgba(212, 175, 55, 0.2)',
+                                borderColor: 'rgba(212, 175, 55, 1)',
+                                pointBackgroundColor: 'rgba(212, 175, 55, 1)',
+                                pointBorderColor: '#fff',
+                                pointHoverBackgroundColor: '#fff',
+                                pointHoverBorderColor: 'rgba(212, 175, 55, 1)',
+                                borderWidth: 2
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Comparativa de Atributos (Calificación 1-5)',
+                                font: { size: 16 }
+                            },
+                            legend: {
+                                position: 'top',
+                            },
+                        },
+                        scales: {
+                            r: {
+                                angleLines: {
+                                    display: true
+                                },
+                                suggestedMin: 0,
+                                suggestedMax: 5,
+                                pointLabels: {
+                                    font: {
+                                        size: 12
+                                    }
+                                },
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            }
+                        }
+                    }
+                };
+                setupChart(radarChartRef, radarChartInstance, radarChartConfig);
+
+                return () => {
+                    marketValueComparisonChartInstance.current?.destroy();
+                    radarChartInstance.current?.destroy();
+                };
+            }, []);
+
+            const negotiationFactors = [
+                { 
+                    icon: 'fa-gem', 
+                    title: 'Acabados', 
+                    text: 'Los acabados de un inmueble son fundamentales, ya que influyen directamente en la percepción de calidad y estética. Elementos como pisos, revestimientos de paredes e iluminación, pueden hacer que un inmueble se destaque y, por ende, justificar un precio más alto. Un inmueble con acabados modernos y de alta calidad tiende a atraer a más compradores, lo que puede resultar en una oferta superior.' 
+                },
+                { 
+                    icon: 'fa-tools', 
+                    title: 'Mantenimiento', 
+                    text: 'Este factor evalúa la gestión proactiva de la propiedad. Un historial de mantenimiento documentado en sistemas críticos (electricidad, fontanería, impermeabilización) ofrece una garantía de fiabilidad. Para la negociación, esto se traduce en confianza y reducción del riesgo futuro. Un comprador está dispuesto a pagar más por la tranquilidad de saber que los sistemas "ocultos" de la propiedad han sido cuidados y no presentarán fallos costosos e inesperados a corto plazo.' 
+                },
+                { 
+                    icon: 'fa-shield-alt', 
+                    title: 'Estado de Conservación', 
+                    text: 'Este punto se refiere a la condición física y observable del inmueble en el momento presente. Evalúa el desgaste visible, la integridad de los acabados (pintura, pisos, carpintería) y la ausencia de patologías evidentes (humedades, grietas, daños estructurales). En la negociación, esto impacta directamente en el flujo de caja inicial del comprador. Un estado de conservación óptimo significa que la propiedad está "lista para habitar" y el comprador evita gastos inmediatos en reparaciones o remodelaciones estéticas, justificando así un precio de cierre más alto.' 
+                },
+                { 
+                    icon: 'fa-couch', 
+                    title: 'Amoblado', 
+                    text: 'Un inmueble completamente amoblado ofrece al comprador la posibilidad de mudarse de inmediato sin tener que preocuparse por adquirir muebles y electrodomésticos. Esto representa un ahorro de tiempo y dinero, lo cual es valorado por muchos compradores, especialmente aquellos que buscan una solución rápida y práctica. Un inmueble amueblado permite al comprador visualizar más fácilmente cómo sería vivir en ese espacio, lo que puede generar un mayor interés y facilitar la toma de decisiones.' 
+                }
+            ];
+
+            return (
+                <>
+                    <div className="p-8"><h2 className="text-[#1e3c72] border-b-2 border-[#1e3c72] pb-2 text-2xl font-bold">INFORME DE VALORACIÓN DE APARTAMENTO</h2></div>
+
+                    <div className="px-8 pb-8"><RossHeideckeCalculator /></div>
+                    
+                    <div className="px-8 pb-8">
+                        <h2 className="text-[#1e3c72] border-b-2 border-[#1e3c72] pb-2 mb-6 text-2xl font-bold">ANÁLISIS DE MERCADO E OBSERVAÇÕES</h2>
+                        <div className="space-y-8">
+                            <div>
+                                <h3 className="text-xl font-semibold mb-3 flex items-center"><span className="font-bold mr-2 text-blue-600">1.</span> Valor de Mercado</h3>
+                                <div className="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-400 mb-4">
+                                   <p>A nivel nacional, la venta de inmuebles no se rige por su valor real (costo de reposición), sino por el valor de mercado. Este último oscila entre un <strong>40% y un 80% por debajo del valor real</strong>, debido a la situación económica del país. La devaluación del Bolívar frente al Dólar ocasiona que las propiedades en dólares tiendan a la baja para ser accesibles.</p>
+                                </div>
+                                <h4 className="font-semibold mb-2">Inmueble Comparable de Referencia:</h4>
+                                <div className="overflow-x-auto border rounded-lg">
+                                    <table className="w-full text-sm text-left text-gray-700">
+                                        <thead className="bg-gray-100 text-xs text-gray-800 uppercase">
+                                            <tr>
+                                                <th className="px-4 py-2">Característica</th>
+                                                <th className="px-4 py-2 bg-blue-100">Inmueble en Estudio</th>
+                                                <th className="px-4 py-2 bg-gray-200">Oferta de Referencia</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr className="border-b"><td className="px-4 py-2 font-medium">Construcción</td><td className="px-4 py-2 bg-blue-50">113 m²</td><td className="px-4 py-2">115 m²</td></tr>
+                                            <tr className="border-b"><td className="px-4 py-2 font-medium">Acabados</td><td className="px-4 py-2 bg-blue-50">Antiguos (Ventanas de romanillas)</td><td className="px-4 py-2">De primera (Ventanas Panorámicas)</td></tr>
+                                            <tr className="border-b"><td className="px-4 py-2 font-medium">Mobiliario</td><td className="px-4 py-2 bg-blue-50">No amoblado</td><td className="px-4 py-2">Amoblado</td></tr>
+                                            <tr className="border-b"><td className="px-4 py-2 font-medium">Edad</td><td className="px-4 py-2 bg-blue-50">43 años</td><td className="px-4 py-2">16 años</td></tr>
+                                            <tr className="border-b"><td className="px-4 py-2 font-medium">Estacionamiento</td><td className="px-4 py-2 bg-blue-50">1 puesto (fuera del conjunto)</td><td className="px-4 py-2">2 puestos (dentro del conjunto)</td></tr>
+                                            <tr className="border-b"><td className="px-4 py-2 font-medium">Seguridad</td><td className="px-4 py-2 bg-blue-50">Sin portón/cerco eléctrico</td><td className="px-4 py-2">Con portón y cerco eléctrico</td></tr>
+                                            <tr className="border-b"><td className="px-4 py-2 font-medium">Ubicación</td><td className="px-4 py-2 bg-blue-50">Piso 1</td><td className="px-4 py-2">Piso 1</td></tr>
+                                            <tr className="border-b"><td className="px-4 py-2 font-medium">Precio de promoción desde Julio 2.025</td><td className="px-4 py-2 bg-blue-50">-</td><td className="px-4 py-2">35.000 $ Negociables</td></tr>
+                                            <tr><td className="px-4 py-2 font-medium">Precio Concretado en Octubre 2.025</td><td className="px-4 py-2 bg-blue-50">-</td><td className="px-4 py-2">30.000 $ (En espera de la firma en el Registro Inmobiliario)</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <p className="text-xs text-gray-500 mt-1">Referencia: <a href="https://www.instagram.com/reel/DNmJSH1R4k9" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Oferta en Instagram</a> ubicada en Av. Andrés Eloy Blanco.</p>
+                                
+                                <div className="mt-6">
+                                    <h4 className="font-semibold mb-2 text-gray-800">Comparativa Visual de Atributos:</h4>
+                                    <p className="text-sm text-gray-600 mb-4">La siguiente gráfica de radar ilustra visualmente las diferencias clave entre los dos inmuebles, calificando cada atributo en una escala del 1 (deficiente) al 5 (excelente).</p>
+                                    <div className="h-80 md:h-96 w-full mx-auto max-w-lg">
+                                        <canvas ref={radarChartRef}></canvas>
+                                    </div>
+                                </div>
+
+                                <div className="mt-8">
+                                    <h4 className="font-semibold mb-2 text-gray-800">Análisis Comparativo Detallado:</h4>
+                                    <div className="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-400">
+                                        <p className="text-sm text-gray-700">La oferta de referencia es significativamente superior al inmueble en estudio en varios aspectos clave que impactan directamente en el valor. Presenta <strong>acabados de primera</strong> y se ofrece <strong>amoblado</strong>, lo que representa un valor agregado inmediato para el comprador. Además, con <strong>16 años de antigüedad</strong>, es considerablemente más nuevo que el inmueble en estudio (43 años), implicando menor desgaste y necesidad de reparaciones. Finalmente, sus <strong>dos puestos de estacionamiento internos</strong> y <strong>mayor seguridad</strong> (portón y cerco eléctrico) son características muy valoradas. Estas ventajas justifican plenamente por qué se concretó en un precio de $30.000 y por qué el inmueble en estudio debe posicionarse con un precio de promoción más competitivo para atraer el interés del mercado.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="px-8 pb-8">
+                        <h2 className="text-[#1e3c72] border-b-2 border-[#1e3c72] pb-2 mb-6 text-2xl font-bold">¿POR QUÉ LA DIFERENCIA ENTRE VALOR TÉCNICO Y DE MERCADO?</h2>
+                        <p className="mb-6">La brecha entre lo que teóricamente cuesta construir la propiedad y lo que el mercado está dispuesto a pagar se explica por la compleja situación económica de Venezuela. Los factores clave son:</p>
+                        <div className="space-y-4">
+                            {[
+                                { icon: 'fa-wallet', title: 'Poder Adquisitivo', text: 'La capacidad de compra del venezolano promedio ha sido drásticamente reducida. Aunque los precios se expresan en dólares, los salarios y ahorros de la mayoría siguen siendo insuficientes para acceder a bienes de alto valor, contrayendo aún más la demanda real y forzando los precios a la baja.' },
+                                { icon: 'fa-money-bill-wave', title: 'Ausencia de Crédito Hipotecario', text: 'El comprador debe pagar de contado. Esto reduce drásticamente el universo de compradores potenciales a solo aquellos con el monto total en efectivo, desplomando la demanda.' }, 
+                                { icon: 'fa-shipping-fast', title: 'Presión Vendedora', text: 'Muchos propietarios tienen una necesidad urgente de vender (emigración, liquidez), lo que los lleva a aceptar ofertas considerablemente más bajas para asegurar una venta rápida.' },
+                                { icon: 'fa-chart-area', title: 'Perfil del Comprador Inversionista', text: 'El comprador típico actual es un inversionista que busca una oportunidad. Es racional, sensible al precio y solo comprará si el precio es lo suficientemente bajo como para ser una excelente inversión.' }
+                            ].sort((a, b) => {
+                                const order = ['Poder Adquisitivo', 'Ausencia de Crédito Hipotecario', 'Presión Vendedora', 'Perfil del Comprador Inversionista'];
+                                return order.indexOf(a.title) - order.indexOf(b.title);
+                            }).map(item => (
+                                <div key={item.title} className="bg-red-50 p-4 rounded-lg flex items-start border-l-4 border-red-400">
+                                    <div className="text-red-700 text-2xl mr-4 w-8 text-center"><i className={`fas ${item.icon}`}></i></div>
+                                    <div>
+                                        <h4 className="font-semibold text-red-800">{item.title}</h4>
+                                        <p className="text-sm text-gray-700">{item.text}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="px-8 pb-8">
+                        <h2 className="text-[#1e3c72] border-b-2 border-[#1e3c72] pb-2 mb-6 text-2xl font-bold">FACTORES CLAVES EN LA NEGOCIACIÓN</h2>
+                        <p className="mb-6">La variabilidad en los precios de venta se debe a varios factores claves que deben considerarse al determinar el valor de negociación de un inmueble. Evaluar correctamente estos aspectos es esencial para establecer un precio justo y competitivo.</p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {negotiationFactors.map(factor => (
+                                <div key={factor.title} className="bg-gray-50 p-4 rounded-lg flex items-start">
+                                    <div className="text-[#1e3c72] text-2xl mr-4 w-8 text-center"><i className={`fas ${factor.icon}`}></i></div>
+                                    <div>
+                                        <h4 className="font-semibold text-gray-800">{factor.title}</h4>
+                                        <p className="text-sm text-gray-600">{factor.text}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="px-8 pb-8">
+                        <h2 className="text-[#1e3c72] border-b-2 border-[#1e3c72] pb-2 mb-6 text-2xl font-bold">CONCLUSIONES Y PRECIO DE PROMOCIÓN</h2>
+                        <p className="mb-6 bg-blue-50 p-4 rounded-lg border-l-4 border-blue-400">
+                            El análisis revela una brecha significativa entre el valor técnico de reposición del inmueble ($34,438.55) y su valor de mercado realizable. Esta diferencia no es arbitraria, sino el resultado directo de la compleja coyuntura económica de Venezuela. Factores como el <strong>drástico descenso del poder adquisitivo</strong>, la <strong>total ausencia de crédito hipotecario</strong> que obliga a transacciones de contado, y una fuerte <strong>presión vendedora</strong>, han creado un "mercado de compradores" donde la oferta supera la demanda efectiva.
+                            <br/><br/>
+                            El análisis comparativo es contundente: una propiedad de referencia, significativamente superior en todos los aspectos clave (27 años más moderna, acabados de primera, amoblada, con doble estacionamiento interno y seguridad reforzada), se negoció y concretó en <strong>$30,000</strong>.
+                            <br/><br/>
+                            Considerando que el inmueble en estudio presenta desventajas competitivas claras frente a esta referencia, establecer un precio de promoción por encima de este umbral sería ignorar la realidad del mercado y desincentivar a los pocos compradores calificados. Por lo tanto, el precio sugerido no es solo un descuento sobre el valor técnico, sino una <strong>posición estratégica y competitiva</strong> calculada para generar tracción, atraer ofertas y facilitar una negociación exitosa en el contexto actual.
+                        </p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                            <div className="bg-green-50 border-l-4 border-green-500 p-8 rounded-lg text-center">
+                                <h3 className="text-2xl font-semibold mb-2 text-green-800">Precio de Promoción Sugerido</h3>
+                                <p className="text-5xl font-bold text-green-900 my-4">$25,000</p>
+                                <p className="text-xl font-semibold text-gray-700">TOTALMENTE NEGOCIABLE</p>
+                                <p className="text-sm text-gray-600 mt-2">*Se recomienda escuchar ofertas y ofrecer facilidades de pago.</p>
+                            </div>
+                            <div className="h-64 md:h-80">
+                                <canvas ref={marketValueComparisonChartRef}></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="px-8 pb-8">
+                        <h2 className="text-[#1e3c72] border-b-2 border-[#1e3c72] pb-2 mb-6 text-2xl font-bold">RECOMENDACIONES</h2>
+                        <div className="space-y-8">
+                            <div>
+                                <h3 className="text-xl font-semibold mb-3 flex items-center"><span className="font-bold mr-2 text-blue-600">1.</span> Mantenimiento Integral y Orden</h3>
+                                <p className="text-gray-700">Se recomienda garantizar que el inmueble se mantenga en óptimas condiciones de limpieza, orden y funcionalidad. Una propiedad impecable permite a los compradores focalizarse en sus atributos y potencial, incrementa el valor percibido y genera confianza en la transacción.</p>
+                            </div>
+                            <div>
+                                <h3 className="text-xl font-semibold mb-3 flex items-center"><span className="font-bold mr-2 text-blue-600">2.</span> Optimización de la Iluminación</h3>
+                                <p className="text-gray-700">Una iluminación adecuada proyecta sensación de amplitud, calidez y modernidad. Es crucial asegurar que ventanas, lámparas y cortinas permitan una distribución homogénea de la luz. Esta estrategia resalta las virtudes del inmueble y prepara el escenario para una evaluación positiva.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="px-8 pb-8">
+                        <div className="bg-[#f8f9fa] p-6 rounded-lg border-l-4 border-[#2c7be5]">
+                            <h3 className="text-lg font-bold text-[#1e3c72] mb-3">Elaborado por:</h3>
+                            <p className="text-xl text-[#2c7be5] font-semibold">Steven Gómez</p>
+                            <p className="text-gray-600">V-18.666.207</p>
+                            <p className="text-gray-600 mb-3">Gerente de Oficina</p>
+                            <p className="font-semibold text-gray-800 tracking-wide mb-5">LEDEZMA ASESORES INMOBILIARIOS & FINANCIEROS C.A.</p>
+                            <h3 className="text-lg font-bold text-[#1e3c72] mb-3">Certificaciones:</h3>
+                            <div className="flex flex-col space-y-2 items-start">
+                                <div className="flex items-center bg-gray-200/60 text-gray-800 text-sm font-medium py-1 pl-1 pr-3 rounded-full"><span className="bg-[#2c7be5] text-white w-5 h-5 rounded-full flex items-center justify-center mr-2 text-xs"><i className="fas fa-certificate"></i></span>Sociedad Venezolana de Economistas Tasadores N° 2404</div>
+                                <div className="flex items-center bg-gray-200/60 text-gray-800 text-sm font-medium py-1 pl-1 pr-3 rounded-full"><span className="bg-[#2c7be5] text-white w-5 h-5 rounded-full flex items-center justify-center mr-2 text-xs"><i className="fas fa-certificate"></i></span>SUDEBAN N° P-5.854</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="p-8 mt-4 rounded-lg bg-gray-100">
+                        <div className="pt-8 border-t border-gray-300 text-center text-gray-600">
+                            <p>Este informe ha sido elaborado como una guía estratégica para la comercialización del inmueble en el contexto actual del mercado venezolano.</p>
+                            <p className="mt-2">© 2025 LEDEZMA ASESORES INMOBILIARIOS & FINANCIEROS C.A. Todos los derechos reservados.</p>
+                        </div>
+                    </div>
+                </>
+            );
+        };
+
+        const Cover = () => {
+          return (
+            <div className="cover bg-white text-[#333333] min-h-screen flex flex-col justify-between text-center relative p-8 md:p-4">
+              <div className="absolute top-5 right-5 w-[150px]">
+                <img src="https://page1.genspark.site/v1/base64_upload/f7ead9fbc5d3b5c8e6ca5edf05233900" alt="Afiliada a la Cámara Inmobiliaria" className="w-full" />
+              </div>
+
+              <div className="container mx-auto">
+                <div className="flex justify-center mx-auto mb-10 max-w-[400px]">
+                  <img src="https://page1.genspark.site/v1/base64_upload/bdf03e4d148c01dccd0a86bdad9ae477" alt="Ledezma Asesores Logo" className="w-full" />
+                </div>
+
+                <div className="flex justify-center space-x-12 mb-12">
+                  <div className="text-center">
+                    <div className="w-12 h-12 rounded-full bg-[#1a4e7e] flex items-center justify-center mx-auto">
+                      <i className="fas fa-home text-white text-xl"></i>
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="w-12 h-12 rounded-full bg-[#1a4e7e] flex items-center justify-center mx-auto">
+                      <i className="fas fa-ruler-combined text-white text-xl"></i>
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="w-12 h-12 rounded-full bg-[#1a4e7e] flex items-center justify-center mx-auto">
+                      <i className="fas fa-dollar-sign text-white text-xl"></i>
+                    </div>
+                  </div>
+                </div>
+
+                <h1 className="text-3xl md:text-4xl text-center text-[#1a4e7e] font-semibold border-b-3 border-[#d4af37] pb-2.5 mb-7">VALORACIÓN PROFESIONAL DE APARTAMENTO</h1>
+
+                <div className="flex justify-center">
+                  <div className="bg-[#f0f7ff] py-2.5 px-5 rounded-md border-l-4 border-[#1a4e7e] inline-block mb-10">
+                    <i className="fas fa-map-marker-alt mr-2 text-[#1a4e7e]"></i>
+                    <span>Ubicación del Inmueble: Calle Brasil, Residencias NELL, Piso 1, Ciudad Bolívar, Estado Bolívar - Venezuela</span>
+                  </div>
+                </div>
+
+                <div className="bg-[#f9f9f9] p-5 rounded-lg mt-10">
+                  <h3 className="text-xl font-semibold mb-4 text-center">Información de Contacto</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="flex items-center mb-3">
+                      <span className="text-[#1a4e7e] w-6 text-center mr-2.5"><i className="fas fa-map-marker-alt"></i></span>
+                      <span>Calle Vidal, Centro Comercial El Progreso, Piso 1, Local No. 2, Ciudad Bolívar, Estado Bolívar</span>
+                    </div>
+                    <div className="flex items-center mb-3">
+                      <span className="text-[#1a4e7e] w-6 text-center mr-2.5"><i className="fas fa-phone"></i></span>
+                      <span>Teléfono CANTV: 0285-6541410</span>
+                    </div>
+                    <div className="flex items-center mb-3">
+                      <span className="text-[#1a4e7e] w-6 text-center mr-2.5"><i className="fab fa-whatsapp"></i></span>
+                      <span>Teléfono Oficina / Whatsapp: 0424-9188861</span>
+                    </div>
+                    <div className="flex items-center mb-3">
+                      <span className="text-[#1a4e7e] w-6 text-center mr-2.5"><i className="fas fa-envelope"></i></span>
+                      <span>Email: <a href="/cdn-cgi/l/email-protection" className="__cf_email__" data-cfemail="583f3d2a3d363b313918343d3c3d223539392b3d2b372a3d2b763b3735">[email&#160;protected]</a></span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-12 flex justify-between items-center">
+                  <div>
+                    <h4 className="font-medium text-gray-700">Análisis de Valoración de Apartamento</h4>
+                    <p className="text-sm text-gray-500">Informe preparado por Périto Avaluador Profesional</p>
+                  </div>
+                  <div className="flex items-center bg-blue-100 py-1 px-4 rounded-full">
+                    <i className="fas fa-user-tie text-blue-700 mr-2"></i>
+                    <span className="text-blue-700 font-medium">Asesoría Inmobiliaria Profesional</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        };
+
+        const App = () => {
+          return (
+            <div className="page-container max-w-[210mm] mx-auto bg-white shadow-lg">
+              <Cover />
+              <ValuationReport />
+            </div>
+          );
+        };
+
+        const rootElement = document.getElementById('root');
+        if (!rootElement) {
+          throw new Error("Could not find root element to mount to");
+        }
+
+        const root = ReactDOM.createRoot(rootElement);
+        root.render(
+          <React.StrictMode>
+            <App />
+          </React.StrictMode>
+        );
+
+    </script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>
